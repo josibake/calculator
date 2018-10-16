@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestAddition(t *testing.T) {
 	tables := []struct {
@@ -18,6 +21,28 @@ func TestAddition(t *testing.T) {
 		total := Addition(table.x, table.y)
 		if total != table.n {
 			t.Errorf("Sum of (%f+%f) was incorrect, got: %f, want: %f.", table.x, table.y, total, table.n)
+		}
+	}
+}
+
+func TestInputParsing(t *testing.T) {
+	tables := []struct {
+		i string
+		o []string
+	}{
+		{"1+3*2", []string{"1", "+", "3", "*", "2"}},
+		{"11+3*2", []string{"11", "+", "3", "*", "2"}},
+		{"1+32*2", []string{"1", "+", "32", "*", "2"}},
+		{"1+3*203", []string{"1", "+", "3", "*", "203"}},
+		{"1.1+3*2", []string{"1.1", "+", "3", "*", "2"}},
+		{"1.1+(3*2)", []string{"1.1", "+", "(", "3", "*", "2", ")"}},
+	}
+
+	for _, table := range tables {
+		precedence := map[string]int{"*": 2, "/": 2, "+": 3, "-": 3, "(": 1, ")": 1}
+		total := InputParsing(table.i, precedence)
+		if reflect.DeepEqual(total, table.o) == false {
+			t.Errorf("Parsing of %s was incorrect, got: %s, want: %s.", table.i, total, table.o)
 		}
 	}
 }
