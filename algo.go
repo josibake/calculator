@@ -81,11 +81,18 @@ func ComputeResult(rpn []string, ops map[string]struct {
 			result = result[:len(result)-1]
 			b := result[len(result)-1]
 			result = result[:len(result)-1]
-			if item == "+" {
+			switch item {
+			case "+":
 				a += b
 				result = append(result, a)
-			} else {
+			case "*":
 				a *= b
+				result = append(result, a)
+			case "-":
+				a -= b
+				result = append(result, a)
+			case "/":
+				a = b / a
 				result = append(result, a)
 			}
 		} else {
