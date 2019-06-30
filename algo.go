@@ -52,37 +52,33 @@ func ShuntingYardAlgorithm(input []string) []string {
 	var stack []string
 	var rpn []string
 	for _, token := range input {
-		if _, exists := operators[token]; exists {
+		switch token {
+		case "(":
+			stack = append(stack, token)
+		case ")":
 			for {
-				if len(stack) == 0 {
-					stack = append(stack, token)
+				operator := stack[len(stack)-1]
+				stack = stack[:len(stack)-1]
+				if operator == "(" {
 					break
-				} else {
-					prevOp := stack[len(stack)-1]
-					if (operators[token].prec < operators[prevOp].prec || (operators[token].prec == operators[prevOp].prec && !operators[prevOp].rAssoc)) && prevOp != "(" {
-						rpn = append(rpn, prevOp)
-						stack = stack[:len(stack)-1]
-					} else {
-						stack = append(stack, token)
+				}
+				rpn = append(rpn, operator)
+			}
+		default:
+			if operator, exists := operators[token]; exists {
+				for len(stack) > 0 {
+					top := stack[len(stack)-1]
+					if prevOp, exists := operators[top]; !exists || prevOp.prec < operator.prec || (prevOp.prec == operator.prec && operator.rAssoc) {
 						break
 					}
-				}
-			}
-		} else if token == "(" {
-			stack = append(stack, token)
-		} else if token == ")" {
-			for {
-				prevOp := stack[len(stack)-1]
-				if prevOp != "(" {
-					rpn = append(rpn, prevOp)
 					stack = stack[:len(stack)-1]
-				} else {
-					stack = stack[:len(stack)-1]
-					break
+					rpn = append(rpn, top)
+
 				}
+				stack = append(stack, token)
+			} else {
+				rpn = append(rpn, token)
 			}
-		} else {
-			rpn = append(rpn, token)
 		}
 	}
 	// drain the stack
