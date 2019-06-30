@@ -1,13 +1,15 @@
 package main
 
-import "strconv"
+import (
+	"math"
+	"strconv"
+	"strings"
+)
 
 var ops = map[string]struct {
 	prec   int
 	rAssoc bool
 }{
-	"(": {5, false},
-	")": {5, true},
 	"^": {4, true},
 	"*": {3, false},
 	"/": {3, false},
@@ -15,24 +17,33 @@ var ops = map[string]struct {
 	"-": {2, false},
 }
 
+func IsParentheses(tok string) bool {
+	switch tok {
+	case "(",
+		")":
+		return true
+	}
+	return false
+}
+
 func CmdLineInputParsing(input string, ops map[string]struct {
 	prec   int
 	rAssoc bool
 }) []string {
 	var output []string
+	input = strings.Replace(input, " ", "", -1)
 	i := 0
 	for j, token := range input {
-		if _, exists := ops[string(token)]; exists {
-			number := input[i:j]
+		token := string(token)
+		if _, exists := ops[token]; exists || IsParentheses(token) {
 			if j == i {
-				output = append(output, string(token))
+				output = append(output, token)
 			} else {
-				output = append(output, number, string(token))
+				output = append(output, input[i:j], token)
 			}
 			i = j + 1
 		} else if _, exists := ops[string(token)]; !exists && j+1 == len(input) {
-			number := input[i:]
-			output = append(output, number)
+			output = append(output, input[i:])
 		} else {
 			continue
 		}
@@ -48,15 +59,34 @@ func ShuntingYardAlgorithm(input []string, ops map[string]struct {
 	var rpn []string
 	for _, tok := range input {
 		if _, isOp := ops[tok]; isOp {
-			if len(stack) > 0 {
-				prevOp := stack[len(stack)-1]
-				if ops[tok].prec > ops[prevOp].prec {
-					stack = append(stack)
+			for {
+				if len(stack) == 0 {
+					stack = append(stack, tok)
+					break
 				} else {
-					rpn = append(rpn, tok)
+					prevOp := stack[len(stack)-1]
+					if (ops[tok].prec < ops[prevOp].prec || (ops[tok].prec == ops[prevOp].prec && !ops[prevOp].rAssoc)) && prevOp != "(" {
+						rpn = append(rpn, prevOp)
+						stack = stack[:len(stack)-1]
+					} else {
+						stack = append(stack, tok)
+						break
+					}
 				}
 			}
+		} else if tok == "(" {
 			stack = append(stack, tok)
+		} else if tok == ")" {
+			for {
+				prevOp := stack[len(stack)-1]
+				if prevOp != "(" {
+					rpn = append(rpn, prevOp)
+					stack = stack[:len(stack)-1]
+				} else {
+					stack = stack[:len(stack)-1]
+					break
+				}
+			}
 		} else {
 			rpn = append(rpn, tok)
 		}
@@ -77,23 +107,28 @@ func ComputeResult(rpn []string, ops map[string]struct {
 	var result []float64
 	for _, item := range rpn {
 		if _, isOp := ops[item]; isOp {
-			a := result[len(result)-1]
+			// pop y
+			y := result[len(result)-1]
 			result = result[:len(result)-1]
-			b := result[len(result)-1]
+			// pop x
+			x := result[len(result)-1]
 			result = result[:len(result)-1]
 			switch item {
 			case "+":
-				a += b
-				result = append(result, a)
+				x += y
+				result = append(result, x)
 			case "*":
-				a *= b
-				result = append(result, a)
+				x *= y
+				result = append(result, x)
 			case "-":
-				a -= b
-				result = append(result, a)
+				x -= y
+				result = append(result, x)
 			case "/":
-				a = b / a
-				result = append(result, a)
+				x = x / y
+				result = append(result, x)
+			case "^":
+				x = math.Pow(x, y)
+				result = append(result, x)
 			}
 		} else {
 			f, _ := strconv.ParseFloat(item, 64)
