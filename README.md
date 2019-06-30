@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/josibake/learn-tdd/badge.svg?branch=master)](https://coveralls.io/github/josibake/learn-tdd?branch=master)
+
 lil command line math utility - purpose of this project is to..
 
 * learn test driven development principles (TDD)
