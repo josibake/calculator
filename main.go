@@ -8,8 +8,8 @@ import (
 
 func main() {
 	input := strings.Join(os.Args[1:], "")
-	tokens := CmdLineInputParsing(input, ops)
-	rpn := ShuntingYardAlgorithm(tokens, ops)
-	result := ComputeResult(rpn, ops)
+	tokens := CmdLineInputParsing(input)
+	rpn := ShuntingYardAlgorithm(tokens)
+	result := ComputeResult(rpn)
 	fmt.Println(result)
 }

@@ -23,7 +23,7 @@ func TestCmdLineInputParsing(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		total := CmdLineInputParsing(table.i, ops)
+		total := CmdLineInputParsing(table.i)
 		if reflect.DeepEqual(total, table.o) == false {
 			t.Errorf("Parsing of %s was incorrect, got: %s, want: %s.", table.i, total, table.o)
 		}
@@ -45,7 +45,7 @@ func TestShuntingYardAlgorithm(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		rpn := ShuntingYardAlgorithm(table.i, ops)
+		rpn := ShuntingYardAlgorithm(table.i)
 		if reflect.DeepEqual(rpn, table.o) == false {
 			t.Errorf("Parsing of %s was incorrect, got: %s, want: %s.", table.i, rpn, table.o)
 		}
@@ -69,7 +69,7 @@ func TestComputeResult(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		result := ComputeResult(table.i, ops)
+		result := ComputeResult(table.i)
 		if result != table.o {
 			t.Errorf("Parsing of %s was incorrect, got: %f, want: %f.", table.i, result, table.o)
 		}
