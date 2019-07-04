@@ -1,4 +1,4 @@
-package main
+package calculator
 
 import (
 	"reflect"
@@ -70,6 +70,28 @@ func TestComputeResult(t *testing.T) {
 
 	for _, table := range tables {
 		result := ComputeResult(table.i)
+		if result != table.o {
+			t.Errorf("Parsing of %s was incorrect, got: %f, want: %f.", table.i, result, table.o)
+		}
+	}
+}
+
+func TestCalculate(t *testing.T) {
+	tables := []struct {
+		i string
+		o float64
+	}{
+		{"1 + 3*2", 7},
+		{"1 - 2", -1},
+		{"1+32*2", 65},
+		{"1+3*203", 610},
+		{"1.1+(3*2)", 7.1},
+		{"2^3", 8},
+		{"3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3", 3.0001220703125},
+	}
+
+	for _, table := range tables {
+		result := Calculate(table.i)
 		if result != table.o {
 			t.Errorf("Parsing of %s was incorrect, got: %f, want: %f.", table.i, result, table.o)
 		}

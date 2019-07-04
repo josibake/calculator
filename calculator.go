@@ -1,4 +1,4 @@
-package main
+package calculator
 
 import (
 	"math"
@@ -123,4 +123,11 @@ func ComputeResult(rpn []string) float64 {
 		}
 	}
 	return result[0]
+}
+
+func Calculate(input string) float64 {
+	tokens := CmdLineInputParsing(input)
+	rpn := ShuntingYardAlgorithm(tokens)
+	result := ComputeResult(rpn)
+	return result
 }
