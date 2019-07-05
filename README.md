@@ -1,5 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/josibake/learn-tdd/badge.svg?branch=master)](https://coveralls.io/github/josibake/learn-tdd?branch=master)
-[![Build Status](https://travis-ci.com/josibake/learn-tdd.svg?branch=master)](https://travis-ci.com/josibake/learn-tdd)
+[![Coverage Status](https://coveralls.io/repos/github/josibake/calculator/badge.svg?branch=master)](https://coveralls.io/github/josibake/calculator?branch=master)
+[![Build Status](https://travis-ci.com/josibake/calculator.svg?branch=master)](https://travis-ci.com/josibake/calculator)
 
 lil command line math utility - purpose of this project is to..
 

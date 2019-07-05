@@ -86,7 +86,7 @@ func TestCalculate(t *testing.T) {
 		o float64
 	}{
 		{"sin(1)", math.Sin(1)},
-		{"sin(0)", math.Sin(0)},
+		{"sin(pi)", math.Sin(math.Pi)},
 		{"cos(0)", math.Cos(0)},
 		{"1+sin(1)", 1 + math.Sin(1)},
 		{"1+sin(1+1)", 1 + math.Sin(1+1)},
