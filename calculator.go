@@ -47,20 +47,22 @@ func CmdLineInputParsing(input string) []string {
 	for j, token := range input {
 		token := string(token)
 		if _, exists := operators[token]; exists || isParentheses(token) {
-			if j == i {
+			switch {
+			case i < j:
+				output = append(output, input[i:j])
+				fallthrough
+			case i == j:
 				output = append(output, token)
-			} else {
-				output = append(output, input[i:j], token)
-
 			}
 			i = j + 1
 		} else {
 			continue
 		}
 	}
-	if input[i:] != "" {
+	if i < len(input) {
 		output = append(output, input[i:])
 	}
+
 	return output
 }
 
