@@ -1,6 +1,7 @@
 package calculator
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -10,6 +11,7 @@ func TestCmdLineInputParsing(t *testing.T) {
 		i string
 		o []string
 	}{
+		{"sin(0)", []string{"sin", "(", "0", ")"}},
 		{"1 + 3*2", []string{"1", "+", "3", "*", "2"}},
 		{"1 +  3 *2", []string{"1", "+", "3", "*", "2"}},
 		{"1+3*2", []string{"1", "+", "3", "*", "2"}},
@@ -35,6 +37,7 @@ func TestShuntingYardAlgorithm(t *testing.T) {
 		i []string
 		o []string
 	}{
+		{[]string{"sin", "(", "0", ")"}, []string{"0", "sin"}},
 		{[]string{"1", "+", "3", "+", "2"}, []string{"1", "3", "+", "2", "+"}},
 		{[]string{"1", "+", "3", "*", "2"}, []string{"1", "3", "2", "*", "+"}},
 		{[]string{"11", "+", "3", "*", "2"}, []string{"11", "3", "2", "*", "+"}},
@@ -57,6 +60,7 @@ func TestComputeResult(t *testing.T) {
 		i []string
 		o float64
 	}{
+		{[]string{"0", "sin"}, 0},
 		{[]string{"1", "2", "-"}, -1},
 		{[]string{"1", "3", "+", "2", "+"}, 6},
 		{[]string{"1", "3", "2", "*", "+"}, 7},
@@ -81,6 +85,13 @@ func TestCalculate(t *testing.T) {
 		i string
 		o float64
 	}{
+		{"sin(1)", math.Sin(1)},
+		{"sin(0)", math.Sin(0)},
+		{"cos(0)", math.Cos(0)},
+		{"1+sin(1)", 1 + math.Sin(1)},
+		{"1+sin(1+1)", 1 + math.Sin(1+1)},
+		{"1+sin(sin(1+1))", 1 + math.Sin(math.Sin(1+1))},
+		{"1+2*sin(1)", 1 + 2*math.Sin(1)},
 		{"1 + 3*2", 7},
 		{"1 - 2", -1},
 		{"1+32*2", 65},

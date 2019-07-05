@@ -17,6 +17,15 @@ var operators = map[string]struct {
 	"-": {2, false},
 }
 
+func isFunction(token string) string {
+	switch token {
+	case "sin",
+		"cos":
+		return "func"
+	}
+	return token
+}
+
 func isParentheses(token string) bool {
 	switch token {
 	case "(",
@@ -52,7 +61,9 @@ func ShuntingYardAlgorithm(input []string) []string {
 	var stack []string
 	var rpn []string
 	for _, token := range input {
-		switch token {
+		switch isFunction(token) {
+		case "func":
+			stack = append(stack, token)
 		case "(":
 			stack = append(stack, token)
 		case ")":
@@ -117,6 +128,18 @@ func ComputeResult(rpn []string) float64 {
 				x = math.Pow(x, y)
 				result = append(result, x)
 			}
+		} else if isFunction(token) == "func" {
+			x := result[len(result)-1]
+			result = result[:len(result)-1]
+			switch token {
+			case "sin":
+				x = math.Sin(x)
+				result = append(result, x)
+			case "cos":
+				x = math.Cos(x)
+				result = append(result, x)
+			}
+
 		} else {
 			f, _ := strconv.ParseFloat(token, 64)
 			result = append(result, f)
